@@ -6,7 +6,9 @@ import os
 import urllib.error
 import urllib.request
 
-ROOT = Path(__file__).parent / "public"
+APP_DIR = Path(__file__).parent
+PUBLIC_DIR = APP_DIR / "public"
+ROOT = PUBLIC_DIR if (PUBLIC_DIR / "index.html").exists() else APP_DIR
 PORT = int(os.environ.get("PORT", "8080"))
 
 
