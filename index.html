@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#176b5b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Listing App">
+    <title>Market Listing Assistant</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.svg">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Listings">
+        <div class="brand">
+          <span class="brand-mark">ML</span>
+          <div>
+            <h1>Market Listing Assistant</h1>
+            <p>Draft, price, approve, post.</p>
+          </div>
+        </div>
+        <button id="newListingBtn" class="primary-button" type="button">New item</button>
+        <button id="googleKeyBtn" type="button">Connect Google AI</button>
+        <button id="installBtn" type="button">Install on phone</button>
+        <div class="sidebar-section">
+          <h2>Draft queue</h2>
+          <div id="listingList" class="listing-list"></div>
+        </div>
+        <div class="platform-note">
+          <strong>Posting flow</strong>
+          <span>Facebook: prepare and copy into Marketplace.</span>
+          <span>Craigslist: prepare post, or use bulk API later if your account qualifies.</span>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <section class="topbar" aria-label="Listing status">
+          <div>
+            <p class="eyebrow">One item at a time</p>
+            <h2 id="pageTitle">Create a listing</h2>
+          </div>
+          <div class="topbar-actions">
+            <button id="freshStartBtn" type="button">Fresh start</button>
+            <div class="status-pill" id="aiStatus">AI ready</div>
+          </div>
+        </section>
+
+        <section class="capture-band">
+          <div class="camera-panel">
+            <video id="cameraPreview" autoplay playsinline muted></video>
+            <canvas id="snapshotCanvas" hidden></canvas>
+            <div class="camera-actions">
+              <button id="startCameraBtn" type="button">Start camera</button>
+              <button id="takePhotoBtn" type="button">Take photo</button>
+              <label class="file-button">
+                Add photos
+                <input id="photoInput" type="file" accept="image/*" capture="environment">
+              </label>
+            </div>
+          </div>
+          <div class="thumb-panel">
+            <div class="thumb-header">
+              <h3>Photos</h3>
+              <button id="clearPhotosBtn" type="button">Clear</button>
+            </div>
+            <p class="helper-text">Phone test mode uses fewer photos. Cloud mode supports larger photos.</p>
+            <div id="photoStrip" class="photo-strip"></div>
+          </div>
+        </section>
+
+        <section class="editor-grid">
+          <form id="listingForm" class="editor-panel">
+            <div class="form-row two">
+              <label>
+                Item name
+                <input id="manualName" type="text" placeholder="Optional before AI scan">
+              </label>
+              <label>
+                ZIP code
+                <input id="location" type="text" value="98271">
+              </label>
+            </div>
+
+            <div class="form-row two">
+              <label>
+                Condition
+                <select id="condition">
+                  <option>Brand new</option>
+                  <option>Like new</option>
+                  <option selected>Good</option>
+                  <option>Fair</option>
+                  <option>Needs repair</option>
+                  <option>For parts</option>
+                </select>
+              </label>
+              <label>
+                Category
+                <input id="category" type="text" placeholder="AI will suggest">
+              </label>
+            </div>
+
+            <label>
+              Notes, defects, included parts
+              <textarea id="notes" rows="4" placeholder="Example: small scratch on left side, includes charger, pickup only"></textarea>
+            </label>
+
+            <div class="action-row">
+              <button id="analyzeBtn" class="primary-button" type="button">Analyze photos</button>
+              <button id="saveDraftBtn" type="button">Save draft</button>
+            </div>
+          </form>
+
+          <section class="pricing-panel" aria-label="Price guidance">
+            <h3>Price guidance</h3>
+            <div class="price-meter">
+              <span id="priceLow">$0</span>
+              <strong id="recommendedPrice">$0</strong>
+              <span id="priceHigh">$0</span>
+            </div>
+            <label>
+              Final asking price
+              <input id="askingPrice" type="number" min="0" step="1">
+            </label>
+            <div class="search-links">
+              <button id="marketSearchBtn" type="button">Check Marketplace prices</button>
+              <button id="craigslistSearchBtn" type="button">Check Craigslist prices</button>
+              <button id="imageSearchBtn" type="button">Find product photo</button>
+            </div>
+            <p id="confidenceText" class="helper-text">Add photos and details for a stronger estimate.</p>
+          </section>
+        </section>
+
+        <section class="approval-band">
+          <div class="draft-panel">
+            <div class="section-header">
+              <h3>Ad preview</h3>
+              <button id="copyAllBtn" type="button">Copy text</button>
+            </div>
+            <label>
+              Title
+              <input id="title" type="text">
+            </label>
+            <label>
+              Description
+              <textarea id="description" rows="8"></textarea>
+            </label>
+          </div>
+
+          <div class="publish-panel">
+            <h3>Final approval</h3>
+            <div class="approval-checks">
+              <label><input id="photoCheck" type="checkbox"> Photos look right</label>
+              <label><input id="priceCheck" type="checkbox"> Price is approved</label>
+              <label><input id="textCheck" type="checkbox"> Title and description are approved</label>
+            </div>
+            <label>
+              Load after approval
+              <select id="platformChoice">
+                <option value="facebook" selected>Facebook Marketplace</option>
+                <option value="craigslist">Craigslist</option>
+              </select>
+            </label>
+            <button id="approveBtn" class="primary-button" type="button">Approve listing</button>
+            <div class="publish-actions">
+              <button id="facebookBtn" type="button" disabled>Load Facebook post</button>
+              <button id="craigslistBtn" type="button" disabled>Load Craigslist post</button>
+              <button id="downloadBtn" type="button" disabled>Download listing JSON</button>
+            </div>
+            <p class="helper-text">After approval, the app copies your finished text and opens the posting page. You add photos and press the final submit button there.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <template id="photoTemplate">
+      <figure class="thumb">
+        <img alt="Listing photo">
+        <button type="button" aria-label="Remove photo">×</button>
+      </figure>
+    </template>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
