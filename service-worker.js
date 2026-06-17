@@ -1,4 +1,4 @@
-const CACHE_NAME = "market-listing-assistant-v12";
+const CACHE_NAME = "market-listing-assistant-v13";
 const APP_ASSETS = [
   "/",
   "/index.html",

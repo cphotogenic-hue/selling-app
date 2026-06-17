@@ -470,7 +470,7 @@ function downloadListing() {
 async function loadChosenPlatform() {
   const url = elements.platformChoice.value === "craigslist"
     ? "https://www.craigslist.org/about/sites"
-    : "https://www.facebook.com/marketplace/create/item";
+    : "https://m.facebook.com/marketplace/create/item/";
   const opened = window.open(url, "_blank", "noopener");
   await copyAd();
   if (elements.platformChoice.value === "craigslist") {
