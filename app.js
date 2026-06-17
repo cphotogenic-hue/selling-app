@@ -7,7 +7,7 @@ const state = {
 
 const DEFAULT_ZIP = "98271";
 const IS_LOCAL_PHONE_SERVER = location.hostname.startsWith("192.168.") || location.hostname === "localhost";
-const MAX_PHOTOS = IS_LOCAL_PHONE_SERVER ? 1 : 4;
+const MAX_PHOTOS = 4;
 
 const $ = (selector) => document.querySelector(selector);
 const elements = {
@@ -225,38 +225,12 @@ function setPrice(low = 0, high = 0, recommended = 0) {
 }
 
 async function resizeImage(file) {
-  if (!IS_LOCAL_PHONE_SERVER) {
-    const dataUrl = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-    return dataUrl;
-  }
-
-  if ("createImageBitmap" in window) {
-    const bitmap = await createImageBitmap(file, {
-      resizeWidth: 260,
-      resizeHeight: 260,
-      resizeQuality: "low"
-    });
-    const canvas = document.createElement("canvas");
-    const scale = Math.min(1, 260 / Math.max(bitmap.width, bitmap.height));
-    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
-    canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    bitmap.close?.();
-    return canvas.toDataURL("image/jpeg", 0.32);
-  }
-
-  const dataUrl = await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
-  return compressDataUrl(dataUrl);
 }
 
 async function compressDataUrl(dataUrl) {
