@@ -1,11 +1,12 @@
-const CACHE_NAME = "market-listing-assistant-v14";
+const CACHE_NAME = "market-listing-assistant-v15";
 const APP_ASSETS = [
   "/",
   "/index.html",
   "/styles.css",
   "/app.js",
   "/manifest.webmanifest",
-  "/icon.svg"
+  "/icon-192.png",
+  "/icon-512.png"
 ];
 
 self.addEventListener("install", (event) => {
